@@ -1,0 +1,17 @@
+head {
+  display: block;
+}
+
+title {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.5em;
+  text-align: center;
+}
+
+#log {
+  border: 1px dotted gray;
+  height: 10em;
+  overflow: auto;
+}

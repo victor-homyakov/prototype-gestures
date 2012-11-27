@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Gestures - functional test</title>
+  <link rel="stylesheet" href="test.css" charset="utf-8" />
+  <script src="../lib/proto-scripty.js" charset="utf-8"></script>
+  <script src="../js/gestures.js" charset="utf-8"></script>
+  <script charset="utf-8">
+    function log() {
+      var log = $("log");
+      for (var i = 0, len = arguments.length; i < len; ++i) {
+        log.insert(arguments[i]).scrollTop += 1000;
+      }
+      log.insert("<br\/>").scrollTop += 1000;
+    }
+
+
+    document.observe("dom:loaded", function(e) {
+      log("dom:loaded", e);
+    });
+
+    new Gestures(document);
+  </script>
+</head>
+<body>
+  <div id="log"></div>
+</body>
+</html>
