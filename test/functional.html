@@ -10,7 +10,7 @@
     function log() {
       var log = $("log");
       for (var i = 0, len = arguments.length; i < len; ++i) {
-        log.insert(arguments[i]).scrollTop += 1000;
+        log.insert(Object.inspect(arguments[i]) + " ");
       }
       log.insert("<br\/>").scrollTop += 1000;
     }
@@ -20,7 +20,11 @@
       log("dom:loaded", e);
     });
 
-    new Gestures(document);
+    new Gestures(document, {
+      hold: function(event) {
+        log("hold", event);
+      }
+    });
   </script>
 </head>
 <body>
