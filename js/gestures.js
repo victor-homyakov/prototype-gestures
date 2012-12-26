@@ -9,9 +9,9 @@ Event.supportsTouch = ("ontouchstart" in window);
 
 var Gestures = Class.create(Mixin.Observable, {
   DEFAULT_OPTIONS: {
-    // true to prevent default action for touch event
+    // true to prevent default action for touch/mouse events
     // preventDefault=false may lead to strange behavior (default event and gesture simultaneously)
-    preventDefault: false,
+    preventDefault: true,
 
     // hold gesture enabled
     holdEnabled: true,
@@ -20,6 +20,9 @@ var Gestures = Class.create(Mixin.Observable, {
   },
 
   prebind: ["handleTouchStart", "handleTouchMove", "handleTouchEnd", "handleMouseOut"],
+
+  holdTimer: null,
+  mouseIsDown: false,
 
   initialize: function(element, options) {
     options = Object.extend(Object.clone(this.DEFAULT_OPTIONS), options || {});
@@ -86,7 +89,7 @@ var Gestures = Class.create(Mixin.Observable, {
      };
      */
     this.offset = Element.cumulativeOffset(this.element);
-    this.mousedown = true;
+    this.mouseIsDown = true;
 
     console.log("handleTouchStart", event, this.pos.start, this.offset);
     // detect "hold" gesture
@@ -97,9 +100,18 @@ var Gestures = Class.create(Mixin.Observable, {
     }
   },
 
+  /**
+   * Handle touchmove and mousemove events.
+   */
   handleTouchMove: function(event) {
-    // TODO
-    //console.log("handleTouchMove", event);
+    if (this.mouseIsDown) {
+      console.log("handleTouchMove", event);
+      this.eventMove = event;
+      this.pos.move = this.getEventPos(event);
+      if (!this.detectTransform(event)) {
+        this.detectDrag(event);
+      }
+    }
   },
 
   handleTouchEnd: function(event) {
@@ -159,14 +171,15 @@ var Gestures = Class.create(Mixin.Observable, {
     params.touches = this.getEventPos(params.originalEvent);
     params.type = eventName;
     this.notify(eventName, params);
+    // TODO Event.fire()
   },
 
   /**
    * Hold gesture detection - fired by handleTouchStart.
+   *
+   * @param {Event} event
    */
   detectHold: function(event) {
-    // TODO
-    // only when one finger is on the screen
     if (this.options.holdEnabled) {
       this.gesture = "hold";
       clearTimeout(this.holdTimer);
@@ -179,5 +192,19 @@ var Gestures = Class.create(Mixin.Observable, {
         }
       }).bind(this, event, this.pos).delay(this.options.holdTimeout);
     }
+  },
+
+  detectTransform: function(event) {
+    // TODO transform
+    return false;
+  },
+
+  /**
+   * Drag gesture detection - fired by handleTouchMove.
+   *
+   * @param {Event} event
+   */
+  detectDrag: function(event) {
+    // TODO drag
   }
 });
